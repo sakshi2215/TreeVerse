@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -6,31 +7,14 @@
   <meta name="description" content="Your solution for accurate tree enumeration">
   <title>TreeVerse</title>
 
-  <!-- OG -->
-  <meta property="og:site_name" content="TreeVerse">
-  <meta property="og:title" content="TreeVerse">
-  <meta property="og:url" content="http://treesense.vipulchaturvedi.com/">
-  <meta property="og:type" content="website">
-  <meta property="og:description" content="Your solution for accurate tree enumeration">
-  <meta property="og:image" content="https://i.imgur.com/43l43ve.png">
-  <!-- ... -->
-
-  <!-- Twitter -->
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:site" content="http://treesense.vipulchaturvedi.com">
-  <meta name="twitter:title" content="TreeVerse">
-  <meta name="twitter:description" content="Your solution for accurate tree enumeration">
-  <meta name="twitter:image:src" content="https://i.imgur.com/43l43ve.png">
-  <!-- ... -->
-
   <!-- Favicon -->
-  <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
-  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png">
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-180x180.png">
+  <link rel="shortcut icon" href=".app/static/images/favicon.ico" type="image/x-icon">
+  <link rel="apple-touch-icon" href="{{url_for('static', filename='images/apple-touch-icon.png')}}">
+  <link rel="apple-touch-icon" sizes="180x180" href="{{ url_for('static', filename='images/apple-touch-icon-180x180.png') }}">   
 
   <!-- Stylesheets -->
   <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,700italic,400,300,700" type="text/css">
-  <link rel="stylesheet" href="src/assets/css/styles.css">
+  <link rel="stylesheet" href="{{url_for('static', filename='css/styles.css')}}"> 
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/daisyui@3.9.3/dist/full.min.css">
   <script src="https://cdn.tailwindcss.com"></script>
@@ -53,11 +37,11 @@
   <header class="bg-blue-500 py-4">
     <div class="container mx-auto flex items-center justify-between">
       <h1 class="text-white text-2xl font-semibold flex items-center">
-        <img src="images/treeicon.png" class="w-8 h-8 mr-2" alt="TreeSense Imaging logo">
+        <img src="{{ url_for('static', filename='images/panaromic.png') }}" class="w-8 h-8 mr-2" alt="TreeSense Imaging logo">
         TreeVerse
       </h1>
       <nav class="hidden md:flex space-x-4">
-        <a href="/about" class="text-white">About</a>
+        <a href="{{url_for('main.about')}}" class="text-white">About</a>
         <a href="/features" class="text-white">Features</a>
       </nav>
       <div class="md:hidden">
@@ -77,7 +61,7 @@
     <section id="hero" class="bg-gray-100 p-8 text-center">
       <h1 class="text-4xl font-bold mb-4">Your solution for accurate tree enumeration</h1>
       <p class="text-gray-600">TreeVense is an open service for Tree Enumeration to provide access to visualizations or interactive interfaces that allow users to explore and interpret the results easily.</p>
-      <a href="predict.html" class="block mx-auto mt-4 btn btn-primary">Get Started</a>
+      <a href="{{url_for('main.predict')}}" class="block mx-auto mt-4 btn btn-primary">Get Started</a>
     </section>
 
     <!-- Stats Section -->
@@ -95,7 +79,7 @@
 
     <!-- Panoramic Section -->
     <section class="py-8">
-      <img src="images/panaromic.png" alt="Panoramic view" class="mx-auto" />
+      <img src="{{url_for('static', filename='images/panaromic.png')}}" alt="Panoramic view" class="mx-auto" />
     </section>
   </main>
 

@@ -1,148 +1,85 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f4f4f4;
-        }
+<style>
+    body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #f4f4f4;
+}
 
-        h2, h3 {
-            color: #333;
-            padding: 20px;
-        }
+h2, h3 {
+  color: #333;
+  padding: 20px;
+}
 
-        h3 {
-            display: flex;
-            align-items: center;
-        }
+h3 {
+  display: flex;
+  align-items: center;
+}
 
-        input[type="file"] {
-            display: block;
-            margin: 20px;
-        }
+input[type="file"] {
+  display: block;
+  margin: 20px;
+}
 
-        button {
-            background-color: #4CAF50; /* Green */
-            border: none;
-            color: white;
-            padding: 15px 32px;
-            text-align: center;
-            text-decoration: none;
-            display: inline-block;
-            font-size: 16px;
-        }
+button {
+  background-color: #4CAF50; /* Green */
+  border: none;
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
 
-        .image-container {
-            display: flex;
-            justify-content: space-around;
-        }
+.image-container {
+  display: flex;
+  justify-content: space-around;
+}
 
-        .image-container img {
-            max-width: calc(50% - 40px);
-        }
+.image-container img {
+  max-width: calc(50% - 40px);
+}
 
-        #processed-image-container {
-            position: relative;
-        }
+#green-cover-percentage {
+  font-size: 24px;
+}
+#idle-land-percentage{
+  font-size: 24px;
+}
+</style>
+<script>
+  function updateFileName() {
+      var input = document.getElementById('photo');
+      var selectedFileName = input.files[0] ? input.files[0].name : 'No file selected';
+      document.getElementById('selected-file-name').innerText = selectedFileName;
+  }
 
-        #optimal-path-canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-    </style>
+  document.addEventListener('DOMContentLoaded', function() {
+      var input = document.getElementById('photo');
+      input.addEventListener('change', updateFileName);
+  });
+</script>
 </head>
 <body>
     <center>
-        <h2>Optimal Pathing</h2>
+<h2>Optimal Pathing</h2>
 
-        <input type="file" id="image-file" accept="image/*">
-        <button onclick="processImage()">Process Image</button>
-    </center>
+<form action="{{ url_for('main.upload_image') }}" method="post" enctype="multipart/form-data">
+    <input type="file" name="file" id="photo" accept=".png, .jpg, .jpeg" required>
+    <button type="submit">Process Image</button>
+</form>
+</center>
 
-    <h3>Original Image with Plot:</h3>
-    <div class="image-container">
-        <img id="uploaded-image" src="" alt="Uploaded Image">
-    </div>
+<h3>Processed Image:</h3>
+<div class="image-container">
+    <img src="{{ processed_image }}" alt="Processed Image">
+</div>
 
-    <h3>Processed Image:</h3>
-    <div class="image-container">
-        <img id="processed-image" src="" alt="Processed Image"> <!-- Display processed image here -->
-    </div>
 
-    <script>
-        function processImage() {
-    const fileInput = document.getElementById('image-file');
-    const file = fileInput.files[0];
-    const reader = new FileReader();
 
-    reader.onloadend = () => {
-        const uploadedImage = document.getElementById('uploaded-image');
-        const processedImage = document.getElementById('processed-image');
-
-        const img = new Image();
-        img.onload = () => {
-            // Display the uploaded image
-            uploadedImage.src = reader.result;
-
-            // Send the image file to the server using Fetch API
-            sendImageToServer(reader.result);
-        };
-        img.src = reader.result;
-
-        // Set the processed image source to an empty string initially
-        processedImage.src = '';
-    };
-
-    if (file) {
-        reader.readAsDataURL(file);
-    }
-}
-
-function sendImageToServer(imageData) {
-    const url = 'http://localhost:8000/';  // Update URL to match your server endpoint
-    const formData = new FormData();
-    formData.append('image', imageData);
-
-    fetch(url, {
-        method: 'POST',
-        mode: 'cors',
-        credentials: 'include',
-        body: formData
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log('Server Response:', data);
-        // Handle the response from the server (e.g., display optimal pathing)
-        displayImages(data); // Display the processed image after receiving the response
-    })
-    .catch(error => {
-        console.error('Error:', error);
-    });
-}
-
-function displayImages(response) {
-    // Get the processed image and plot image data from the server response
-    const plotImageSrc = 'data:image/png;base64,' + response.plot_image;
-    const processedImageSrc = 'data:image/png;base64,' + response.processed_image;
-
-    // Get the image elements
-    const plotImage = document.getElementById('uploaded-image'); // Assuming you want to display the plot with the uploaded image
-    const processedImage = document.getElementById('processed-image'); // Assuming this is the element to display the processed image
-
-    // Set the image sources
-    plotImage.src = plotImageSrc;
-    processedImage.src = processedImageSrc; // Update the processed image source
-}
-
-    </script>
 </body>
 </html>
