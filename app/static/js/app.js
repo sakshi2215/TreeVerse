@@ -16,8 +16,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       // Fetch current weather data from OpenWeather API
-      const currentWeatherResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=51eba4e360f730f85fbe88c4b2ca76f0`);
-      const currentWeatherData = await currentWeatherResponse.json();
+      const currentWeatherData = await fetch(`https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${locations}/last15days?elements=datetime%2CdatetimeEpoch%2Ctemp%2Ctempmax%2Ctempmin%2Cprecip%2Cwindspeed%2Cwindgust%2Cfeelslike%2Cfeelslikemax%2Cfeelslikemin%2Cpressure%2Cstations%2Cdegreedays%2Caccdegreedays&include=fcst%2Cobs%2Chistfcst%2Cstats%2Ccurrent%2Cdays%2Chours&key=NBRQYJ66AF3C6NLHLBJZ3SDYT&contentType=json`);
+      // const currentWeatherData = await currentWeatherResponse.json();
 
       console.log('Current Weather Data:', currentWeatherData);
 
@@ -31,7 +31,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       // Display current weather
       currentWeatherDiv.innerHTML = `
-        <p>Temperature: ${currentWeatherData.main.temp}°C</p>
+        <p>Temperature: ${currentWeatherData.main.temp}°F</p>
         <p>Humidity: ${currentWeatherData.main.humidity}%</p>
         <p>Weather: ${currentWeatherData.weather[0].description}</p>
       `;

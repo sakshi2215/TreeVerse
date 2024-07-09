@@ -1,4 +1,5 @@
-from flask import Blueprint, render_template, request, redirect, url_for, send_file, flash
+from flask import Blueprint, render_template, request, redirect, url_for, send_file, flash, jsonify, request
+import requests
 from werkzeug.utils import secure_filename
 import os
 from app.optimalPath import ImageSeg, OptimalPathing
@@ -45,7 +46,7 @@ def optimal_path():
 
 @main.route('/historical_data')
 def historical_data():
-    return render_template('historical_data.html')
+    return render_template('weather.html')
 
 @main.route('/about')
 def about():
@@ -91,3 +92,21 @@ def upload_image():
 
         # Render optimal_path.html with processed images
         return render_template('optimal_path.html',  processed_image=url_for('UPLOADS', filename='processed_image.png'))
+
+
+
+@main.route('/weather', methods=['GET'])
+def get_weather():
+    city = request.args.get('city')
+    if not city:
+        return jsonify({'error': 'City parameter is required'}), 400
+
+    api_url = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{city}?unitGroup=us&key=NBRQYJ66AF3C6NLHLBJZ3SDYT&contentType=json"
+
+    try:
+        response = requests.get(api_url)
+        response.raise_for_status()  # Raise an error for bad status codes (e.g., 404, 500)
+        data = response.json()
+        return jsonify(data)
+    except requests.exceptions.RequestException as e:
+        return jsonify({'error': f'Failed to fetch data: {str(e)}'}), 500
