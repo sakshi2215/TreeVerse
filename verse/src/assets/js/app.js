@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     try {
       // Fetch current weather data from OpenWeather API
-      const currentWeatherResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=6557810176c36fac5f0db536711a6c52&units=metric`);
+      const currentWeatherResponse = await fetch(`https://api.openweathermap.org/data/2.5/weather?q=${location}&appid={}&units=metric`);
       const currentWeatherData = await currentWeatherResponse.json();
 
       console.log('Current Weather Data:', currentWeatherData);
