@@ -165,25 +165,34 @@ class OptimalPathing:
         image = np.array(self.img)
         x_coords, y_coords = zip(*shortest_path)  # Extract x, y coordinates for plotting
 
-        # Plot starting and ending points
-        plt.plot(start_pixel[1], start_pixel[0], 'go')  # 'go' indicates green circle for start point
-        plt.plot(target_pixel[1], target_pixel[0], 'ro')  # 'ro' indicates red circle for end point
+        # Draw starting and ending points
+        cv2.circle(image, (start_pixel[1], start_pixel[0]), 5, (0, 255, 0), -1)  # Green circle for start point
+        cv2.circle(image, (target_pixel[1], target_pixel[0]), 5, (0, 0, 255), -1)  # Red circle for end point
 
-        # Plot the path
-        plt.plot(y_coords, x_coords, color='blue', linewidth=2)  # Plot the path in blue
-        plt.imshow(plt.imread(self.PATH))
+        # Draw the path
+        for i in range(len(shortest_path) - 1):
+            start_point = (shortest_path[i][1], shortest_path[i][0])
+            end_point = (shortest_path[i + 1][1], shortest_path[i + 1][0])
+            cv2.line(image, start_point, end_point, (255, 0, 0), 2)  # Blue line for path
+
+        # Convert the image to RGB format for displaying with matplotlib
+        image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
         # Save the plot as an in-memory image
         img_buffer = io.BytesIO()
-        plt.savefig(img_buffer, format='png')
-        plt.close()  # Close the plot to free memory
+        plt.imsave(img_buffer, image_rgb, format='png')
         img_buffer.seek(0)
 
         # Processed Image (without plot)
-        processed_image = cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
-        _, processed_image = cv2.threshold(processed_image, 127, 255, cv2.THRESH_BINARY)
+        if len(self.img.shape) == 2:
+            processed_image = self.img  # Image is already grayscale
+        elif self.img.shape[2] == 1:
+            processed_image = self.img[:, :, 0]  # Image is single channel
+        else:
+            processed_image = cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
+            _, processed_image = cv2.threshold(processed_image, 127, 255, cv2.THRESH_BINARY)
 
-        return img_buffer,processed_image
+        return img_buffer, processed_image
 # # Example usage:
 # # Load an image using skimage.io.imread or any other method
 # img = io.imread('path_to_your_image.jpg')

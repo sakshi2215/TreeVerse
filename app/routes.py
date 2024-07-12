@@ -3,7 +3,7 @@ import requests
 from werkzeug.utils import secure_filename
 import os
 from app.optimalPath import ImageSeg, OptimalPathing
-
+import cv2
 
 # Initialize the Blueprint
 main = Blueprint('main', __name__)
@@ -25,7 +25,7 @@ def index():
 
 @main.route('/object_detection')
 def object_detection():
-    return render_template('object_detection.html')
+    return render_template('tree_count.html')
 
 
 @main.route('/object_segmentation')
@@ -86,12 +86,17 @@ def upload_image():
 
         # Save the processed images to the upload folder
         processed_image_path = os.path.join(upload_folder, 'processed_image.png')
-        processed_image.save(processed_image_path)
-        buffer_image_path = os.path.join(upload_folder, 'processed_image.png')
-        buffer_image.save(buffer_image_path)
+        cv2.imwrite(processed_image_path, processed_image)
 
-        # Render optimal_path.html with processed images
-        return render_template('optimal_path.html',  processed_image=url_for('UPLOADS', filename='processed_image.png'))
+        # Save the buffer image
+        buffer_image_path = os.path.join(upload_folder, 'buffer_image.png')
+        with open(buffer_image_path, 'wb') as f:
+            f.write(buffer_image.getbuffer())
+
+        # Render the template with processed images
+        return render_template('optimal_path.html',
+                            processed_image=url_for('UPLOADS', filename='processed_image.png'),
+                            buffer_image=url_for('UPLOADS', filename='buffer_image.png'))
 
 
 

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Tree Enumeration</title>
     <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
-    <link rel="stylesheet" href="{{url_for('static', filename='css/predict.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename= '/css/predict.css')}}">
 </head>
 <body>
     <header>
@@ -121,17 +121,10 @@
              * @returns Raw output of neural network as a flat array of numbers
              */
             async function run_model(input) {
-                try {
-                    const modelPath = 'verse/100going1000.onnx'; // Update with actual path
-                    const modelBuffer = await fetch(modelPath).then(response => response.arrayBuffer());
-                    const model = await ort.InferenceSession.create(modelBuffer);
-                    input = new ort.Tensor(Float32Array.from(input), [1, 3, 640, 640]);
-                    const outputs = await model.run({ images: input });
-                    return outputs["output0"].data;
-                } catch (error) {
-                    console.error('Error loading or running the model:', error);
-                    throw error;
-                }
+                const model = await ort.InferenceSession.create("{{url_for('static', filename= 'model/model.onnx')}}");
+                input = new ort.Tensor(Float32Array.from(input),[1, 3, 640, 640]);
+                const outputs = await model.run({images:input});
+                return outputs["output0"].data;
             }
       
             /*
