@@ -66,7 +66,7 @@ cityInput.addEventListener("keyup", function(event)
 
     var cityInputValue = cityInput.value;
 
-    var apiKey = "51eba4e360f730f85fbe88c4b2ca76f0"; // Default
+    var apiKey = ""; // Default
     var unit = "metric";
     var apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityInputValue}&appid=${apiKey}&units=${unit}`;
 
