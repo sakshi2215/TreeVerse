@@ -8,11 +8,11 @@ The project aims to address the challenge of accurately enumerating trees in for
 
 The project includes a website with a landing page and a dashboard offering the following tools:
 
-- **Tree Count:** Allows accurate tree counting within designated forest areas.
+- **Tree Count:** Allows accurate tree counting within designated forest areas(Using CNN AlexNet Model to produce density Map).
 - **Green Cover Estimator:** Estimates green cover percentage.
 - **Google Map Image** 
-- **Optimal Pathing:** Computes the optimal path between two points within the area.
-- **Historical Data:** Provides historical data for analysis and comparison.
+- **Optimal Pathing:** Computes the optimal path between two points within the area (A star Algorithm).
+- **Historical Data:** Provides historical data for analysis and comparison (Openweather historical weather).
 
 ## Features
 
