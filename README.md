@@ -22,8 +22,24 @@ The project includes a website with a landing page and a dashboard offering the 
 - **Integration:** Seamless integration with forest management systems.
 - **Visualization:** Generates maps, reports, and visual representations of tree enumeration data.
 
+## Screenshots
+
+![image](https://github.com/user-attachments/assets/930a2eb5-96b7-4867-85d5-d85f14ab5145)
+
+![image](https://github.com/user-attachments/assets/ff3eb760-ae7a-412a-bb6f-fdab56a376c7)
+
+![image](https://github.com/user-attachments/assets/2f671918-14fa-4821-9566-ad64ff16aab5)
+
+![image](https://github.com/user-attachments/assets/e8a2061f-33c1-4b79-a137-8e6d6fb075da)
+
+![image](https://github.com/user-attachments/assets/d941ac4b-3178-41d6-ad8b-e9b63db691a7)
+
+
+
 ## Installation
 
 1. Clone the repository:
    ```bash
    git clone https://github.com/your-username/your-repository.git
+
+   
