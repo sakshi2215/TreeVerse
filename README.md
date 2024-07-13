@@ -10,7 +10,7 @@ The project includes a website with a landing page and a dashboard offering the 
 
 - **Tree Count:** Allows accurate tree counting within designated forest areas.
 - **Green Cover Estimator:** Estimates green cover percentage.
-- **Tree Species Identifier:** Identifies tree species.
+- **Google Map Image** 
 - **Optimal Pathing:** Computes the optimal path between two points within the area.
 - **Historical Data:** Provides historical data for analysis and comparison.
 
