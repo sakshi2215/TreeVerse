@@ -1,7 +1,7 @@
 async function getWeather(cityInputValue) {
-  var apiKey = "NBRQYJ66AF3C6NLHLBJZ3SDYT"; // Ensure this is your correct API key
+  var apiKey = ""; // Ensure this is your correct API key
   var unit = "metric";
-  var apiUrl = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}?unitGroup=us&key=NBRQYJ66AF3C6NLHLBJZ3SDYT&contentType=json`;
+  var apiUrl = `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}?unitGroup=us&key={}&contentType=json`;
 
   try {
     var response = await fetch(apiUrl);
