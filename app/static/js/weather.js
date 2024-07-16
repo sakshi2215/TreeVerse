@@ -1,4 +1,4 @@
-const apiKey = 'NBRQYJ66AF3C6NLHLBJZ3SDYT' // this app uses the free tier of OpenWeather API, so to use this app, simply sign up for the free tier and enter the api key. (I deleted the original script.js file and replaced it with this one because I realized that I exposed my API key in the old one.)
+const apiKey = '' // this app uses the free tier of OpenWeather API, so to use this app, simply sign up for the free tier and enter the api key. (I deleted the original script.js file and replaced it with this one because I realized that I exposed my API key in the old one.)
 let futureTempTime = new Array(7).fill(0)
 let futureTemp = new Array(7).fill(0)
 function usTime(x) {

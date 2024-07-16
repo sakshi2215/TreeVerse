@@ -6,7 +6,7 @@ searchCity.addEventListener('input', () => {
     return; // Exit early if no city input
   }
   // const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-  // const apiUrl = `${proxyUrl}weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}?unitGroup=us&key=NBRQYJ66AF3C6NLHLBJZ3SDYT&contentType=json`;
+  // const apiUrl = `${proxyUrl}weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}?unitGroup=us&key={}&contentType=json`;
   fetch(`/weather?city=${city}`)
     .then(response => {
       if (!response.ok) {
