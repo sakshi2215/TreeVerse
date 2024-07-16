@@ -7,7 +7,7 @@ import cv2
 
 # Initialize the Blueprint
 main = Blueprint('main', __name__)
-UPLOAD_FOLDER = 'uploads'
+UPLOAD_FOLDER = os.path.join(os.getcwd(), 'app','static', 'UPLOADS')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 
@@ -59,7 +59,7 @@ def predict():
 
 @main.route('/upload', methods=['GET','POST'])
 def upload_image():
-    result_path = []
+    processed_image = None
     if 'file' not in request.files:
         flash('No file part')
         return render_template('optimal_path.html')
@@ -72,31 +72,28 @@ def upload_image():
     if file and allowed_file(file.filename):
         filename = secure_filename(file.filename)
         # Save the uploaded file to the upload folder
-        upload_folder = os.path.join(os.getcwd(), UPLOAD_FOLDER)
-        if not os.path.exists(upload_folder):
-            os.makedirs(upload_folder)
-        file_path = os.path.join(upload_folder, filename)
+        file_path = os.path.join(UPLOAD_FOLDER, filename)
         file.save(file_path)
 
         # Process the uploaded image using ImageSeg and OptimalPathing classes
         image_processor = ImageSeg(file_path)
         thresholded_image = image_processor.IsoGrayThresh()
         optimal_path_processor = OptimalPathing(thresholded_image,file_path)
-        buffer_image, processed_image = optimal_path_processor.ComputeAStar()
+        processed_image = optimal_path_processor.ComputeAStar()
 
         # Save the processed images to the upload folder
-        processed_image_path = os.path.join(upload_folder, 'processed_image.png')
+        processed_image_path = os.path.join(UPLOAD_FOLDER, 'processed_image.png')
         cv2.imwrite(processed_image_path, processed_image)
-
-        # Save the buffer image
-        buffer_image_path = os.path.join(upload_folder, 'buffer_image.png')
-        with open(buffer_image_path, 'wb') as f:
-            f.write(buffer_image.getbuffer())
+       
+        processed_image_path = url_for('static', filename='UPLOADS/processed_image.png')
+    
 
         # Render the template with processed images
-        return render_template('optimal_path.html',
-                            processed_image=url_for('UPLOADS', filename='processed_image.png'),
-                            buffer_image=url_for('UPLOADS', filename='buffer_image.png'))
+    # Return JSON response
+    return jsonify({
+        'processed_image': processed_image_path
+      
+    })
 
 
 
