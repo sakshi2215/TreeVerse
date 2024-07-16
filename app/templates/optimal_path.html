@@ -1,85 +1,129 @@
 <!DOCTYPE html>
 <html>
 <head>
-<style>
-    body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  padding: 0;
-  background-color: #f4f4f4;
-}
-
-h2, h3 {
-  color: #333;
-  padding: 20px;
-}
-
-h3 {
-  display: flex;
-  align-items: center;
-}
-
-input[type="file"] {
-  display: block;
-  margin: 20px;
-}
-
-button {
-  background-color: #4CAF50; /* Green */
-  border: none;
-  color: white;
-  padding: 15px 32px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-}
-
-.image-container {
-  display: flex;
-  justify-content: space-around;
-}
-
-.image-container img {
-  max-width: calc(50% - 40px);
-}
-
-#green-cover-percentage {
-  font-size: 24px;
-}
-#idle-land-percentage{
-  font-size: 24px;
-}
-</style>
-<script>
-  function updateFileName() {
-      var input = document.getElementById('photo');
-      var selectedFileName = input.files[0] ? input.files[0].name : 'No file selected';
-      document.getElementById('selected-file-name').innerText = selectedFileName;
-  }
-
-  document.addEventListener('DOMContentLoaded', function() {
-      var input = document.getElementById('photo');
-      input.addEventListener('change', updateFileName);
-  });
-</script>
+    <style>
+        /* Your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+    
+        h2, h3 {
+            color: #333;
+            padding: 20px;
+        }
+    
+        h3 {
+            display: flex;
+            align-items: center;
+            justify-content: center; /* Center align h3 content */
+            margin-top: 20px;
+        }
+    
+        input[type="file"] {
+            display: block;
+            margin: 20px auto; /* Center align file input */
+        }
+    
+        button {
+            background-color: #4CAF50; /* Green */
+            border: none;
+            color: white;
+            padding: 15px 32px;
+            text-align: center;
+            text-decoration: none;
+            display: block;
+            margin: 20px auto; /* Center align button */
+            font-size: 16px;
+        }
+    
+        .image-container {
+            display: flex;
+            justify-content: center;
+        }
+    
+        .image-container img {
+            max-width: 90%;
+            height: auto;
+            margin: 20px;
+            display: block;
+            margin: 0 auto; /* Center align image */
+        }
+    
+        #green-cover-percentage, #idle-land-percentage {
+            font-size: 24px;
+        }
+        
+        canvas {
+            border: 1px solid #000;
+            display: block;
+            margin: 0 auto; /* Center align canvas */
+        }
+    </style>
 </head>
 <body>
     <center>
-<h2>Optimal Pathing</h2>
+        <h2>Optimal Pathing</h2>
+        <form id="uploadForm" action="{{ url_for('main.upload_image') }}" method="post" enctype="multipart/form-data">
+            <input type="file" name="file" id="photo" accept=".png, .jpg, .jpeg" required required onchange="previewImage(event)">
+            <br>
+            <img id="photo-preview" src="#" alt="Selected Image Preview">
+            <br>
+            <button type="submit">Process Image</button>
+        </form>
+    </center>
 
-<form action="{{ url_for('main.upload_image') }}" method="post" enctype="multipart/form-data">
-    <input type="file" name="file" id="photo" accept=".png, .jpg, .jpeg" required>
-    <button type="submit">Process Image</button>
-</form>
-</center>
+    <h3>Processed Image:</h3>
+    <canvas id="processedCanvas" width="400" height="300"></canvas>
 
-<h3>Processed Image:</h3>
-<div class="image-container">
-    <img src="{{ processed_image }}" alt="Processed Image">
-</div>
+    <script>
 
+        function previewImage(event) {
+            var input = event.target;
+            var reader = new FileReader();
 
+            reader.onload = function() {
+                var imgElement = document.getElementById('photo-preview');
+                imgElement.src = reader.result;
+                imgElement.style.display = 'block'; // Show the image preview
+            };
 
+            reader.readAsDataURL(input.files[0]);
+        }
+
+        document.getElementById('uploadForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            var formData = new FormData(this);
+
+            fetch(this.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.processed_image) {
+            
+                    loadImage(data.processed_image, 'processedCanvas');
+                } else {
+                    console.error('Failed to load images.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+
+        function loadImage(imagePath, canvasId) {
+            var canvas = document.getElementById(canvasId);
+            var ctx = canvas.getContext('2d');
+            var img = new Image();
+            img.onload = function() {
+                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+            };
+            img.src = imagePath;
+        }
+    </script>
 </body>
 </html>
