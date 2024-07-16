@@ -3,7 +3,8 @@ import math
 import heapq
 import matplotlib.pyplot as plt
 import cv2
-import io
+import io 
+import base64
 class ImageSeg:
 #Initializing the path of image and threshold value by taking as class parameters
     def __init__(self,path):
@@ -77,47 +78,40 @@ class OptimalPathing:
         self.PATH = PATH
 
     def Precompute_EuclideanDist(self, img):
-        rows, cols = len(img), len(img[0])
-        AdjMat = np.zeros((rows, cols))
-        for i in range(rows):
-            for j in range(cols):
-                AdjMat[i][j] = math.sqrt((i - (rows - 1)) ** 2 + (j - (cols - 1)) ** 2)
+        rows, cols = img.shape
+        AdjMat = np.fromfunction(lambda i, j: np.sqrt((i - (rows - 1)) ** 2 + (j - (cols - 1)) ** 2), (rows, cols))
         return AdjMat
 
     def create_graph(self, binary_image, target):
         binary_image = np.array(binary_image)
-        graph = {}
-        rows, cols = len(binary_image), len(binary_image[0])
-        TreeCount_Density = 115 / (rows * cols) * 1000     # Confidence_Val
+        rows, cols = binary_image.shape
+        TreeCount_Density = 115 / (rows * cols) * 1000  # Confidence_Val
         TCD_FACTOR = math.exp(TreeCount_Density * 100)
         AdjMat = self.Precompute_EuclideanDist(binary_image)
+
+        def compute_avg_density(ni, nj, dx, dy):
+            alpha_vals = []
+            beta_vals = []
+            for fact in range(1, 4):
+                if 0 <= ni - fact * dx < rows and 0 <= nj + fact * dy < cols:
+                    alpha_vals.append(255 - binary_image[ni - fact * dx, nj + fact * dy])
+                if 0 <= ni + fact * dx < rows and 0 <= nj - fact * dy < cols:
+                    beta_vals.append(255 - binary_image[ni + fact * dx, nj - fact * dy])
+            avg_density = (sum(alpha_vals) + sum(beta_vals)) / 20
+            return avg_density
+
+        graph = {}
         for i in range(rows):
             for j in range(cols):
                 neighbors = []
-                for dx in [-1, 0, 1]:
-                    for dy in [-1, 0, 1]:
-                        if dx == 0 and dy == 0:
-                            continue
-                        ni, nj = i + dx, j + dy
-                        if 0 <= ni < rows and 0 <= nj < cols:
-                            euclid_dist = math.sqrt((ni - target[0]) ** 2 + (nj - target[1]) ** 2)
-                            avg_density = 0
-                            for fact in range(1, 11):
-                                try:
-                                    alpha_val = 255 - binary_image[ni - fact * dx][nj + fact * dy]
-                                except:
-                                    alpha_val = 0
-                                try:
-                                    beta_val = 255 - binary_image[ni + fact * dx][nj - fact * dy]
-                                except:
-                                    beta_val = 0
-                                avg_density += alpha_val + beta_val
-
-                            avg_density /= 20  # Average density over the 20 pixels
-                            neighbors.append(((ni, nj), TCD_FACTOR * (255 - binary_image[ni][nj]) +
-                                              euclid_dist ** 2 + 50000 * np.log(avg_density + 1)))
-
-                graph[(i, j)] = neighbors  # Store the neighbors for the current pixel
+                for dx, dy in [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]:
+                    ni, nj = i + dx, j + dy
+                    if 0 <= ni < rows and 0 <= nj < cols:
+                        euclid_dist = math.sqrt((ni - target[0]) ** 2 + (nj - target[1]) ** 2)
+                        avg_density = compute_avg_density(ni, nj, dx, dy)
+                        weight = TCD_FACTOR * (255 - binary_image[ni, nj]) + euclid_dist ** 2 + 50000 * np.log(avg_density + 1)
+                        neighbors.append(((ni, nj), weight))
+                graph[(i, j)] = neighbors
         return graph
 
     def trace_path(self, parents, start, target):
@@ -129,18 +123,15 @@ class OptimalPathing:
         path.append(start)
         path.reverse()
         return path
-    
 
-    def ComputeAStar(self, start_pixel=(0, 0), target_pixel=(100, 200)):
+    def ComputeAStar(self, start_pixel=(0, 0), target_pixel=(645, 790)):
         graph = self.create_graph(self.img, target_pixel)
-
-        # Find the shortest path
         parents = {}
         heap = [(0, start_pixel)]
         visited = set()
 
         while heap:
-            (cost, current) = heapq.heappop(heap)
+            cost, current = heapq.heappop(heap)
 
             if current in visited:
                 continue
@@ -157,47 +148,20 @@ class OptimalPathing:
 
         if target_pixel not in parents:
             print("Target pixel is unreachable.")
-            return None, None
+            return
 
         shortest_path = self.trace_path(parents, start_pixel, target_pixel)
 
         # Visualize the image and the shortest path
         image = np.array(self.img)
         x_coords, y_coords = zip(*shortest_path)  # Extract x, y coordinates for plotting
+        # Convert grayscale to RGB
+        image_rgb = cv2.cvtColor(image, cv2.COLOR_GRAY2RGB)
 
-        # Draw starting and ending points
-        cv2.circle(image, (start_pixel[1], start_pixel[0]), 5, (0, 255, 0), -1)  # Green circle for start point
-        cv2.circle(image, (target_pixel[1], target_pixel[0]), 5, (0, 0, 255), -1)  # Red circle for end point
+        thickness = 3  # You can adjust the thickness value as needed
+        for i in range(len(x_coords) - 1):
+            start_point = (y_coords[i], x_coords[i])
+            end_point = (y_coords[i + 1], x_coords[i + 1])
+            image_rgb = cv2.line(image_rgb, start_point, end_point, (255, 0, 0), thickness)
 
-        # Draw the path
-        for i in range(len(shortest_path) - 1):
-            start_point = (shortest_path[i][1], shortest_path[i][0])
-            end_point = (shortest_path[i + 1][1], shortest_path[i + 1][0])
-            cv2.line(image, start_point, end_point, (255, 0, 0), 2)  # Blue line for path
-
-        # Convert the image to RGB format for displaying with matplotlib
-        image_rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-
-        # Save the plot as an in-memory image
-        img_buffer = io.BytesIO()
-        plt.imsave(img_buffer, image_rgb, format='png')
-        img_buffer.seek(0)
-
-        # Processed Image (without plot)
-        if len(self.img.shape) == 2:
-            processed_image = self.img  # Image is already grayscale
-        elif self.img.shape[2] == 1:
-            processed_image = self.img[:, :, 0]  # Image is single channel
-        else:
-            processed_image = cv2.cvtColor(self.img, cv2.COLOR_BGR2GRAY)
-            _, processed_image = cv2.threshold(processed_image, 127, 255, cv2.THRESH_BINARY)
-
-        return img_buffer, processed_image
-# # Example usage:
-# # Load an image using skimage.io.imread or any other method
-# img = io.imread('path_to_your_image.jpg')
-# obj = OptimalPathing(img)
-# plot_image, processed_image = obj.ComputeAStar()
-
-# Now you have two images: plot_image (original image with the plot) and processed_image (processed image)
-# You can save or display these images as needed.
+        return image_rgb
