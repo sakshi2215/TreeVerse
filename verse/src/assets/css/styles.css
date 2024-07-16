@@ -1,0 +1,144 @@
+/* Reset default browser styles */
+body, h1, h2, p, ul, li, form, button {
+  margin: 0;
+  padding: 0;
+}
+
+/* Define global styles */
+body {
+  font-family: 'Open Sans', sans-serif;
+  background-color: #f0f0f0;
+  color: #333;
+  line-height: 1.6;
+  text-align: center;
+}
+
+/* Header styles */
+.header {
+  background-color: #3b82f6; /* blue-500 color */
+  color: #fff; /* white text */
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.header-inner {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%; /* Adjust max-width according to your design */
+  padding-left: 1rem;
+  padding-right: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none; /* Ensure logo is not underlined */
+}
+
+.logo-image {
+  width: 2rem; /* Adjust width according to your design */
+  height: 2rem; /* Adjust height according to your design */
+  margin-right: 0.5rem; /* Adjust margin according to your design */
+}
+
+.logo-text {
+  font-size: 1.5rem; /* Adjust font size according to your design */
+  font-weight: bold;
+}
+
+nav ul {
+  display: flex;
+  list-style: none; /* Remove bullet points */
+}
+
+nav a {
+  color: #fff; /* White text */
+  font-weight: bold;
+  text-decoration: none; /* Remove underlines */
+  margin-right: 1rem; /* Adjust margin according to your design */
+}
+
+/* Mobile menu styles */
+.mobile-menu {
+  display: none; /* Hide by default */
+}
+
+.mobile-menu-icon {
+  display: none; /* Hide by default */
+}
+
+.mobile-menu-icon .bar {
+  width: 1rem; /* Adjust width according to your design */
+  height: 2px; /* Adjust height according to your design */
+  background-color: #fff; /* White color */
+  margin-top: 0.25rem; /* Adjust margin according to your design */
+}
+
+/* Hero section styles */
+.hero {
+  background-image: url('/images/tree1.jpg');
+  background-size: cover;
+  padding: 2rem;
+  text-align: center;
+}
+
+.hero-title {
+  font-size: 2rem; /* Adjust font size according to your design */
+  font-weight: bold;
+  color: #fff; /* White text */
+}
+
+.hero-description {
+  color: #fff; /* White text */
+  margin-top: 1rem; /* Adjust margin according to your design */
+}
+
+.hero-button {
+  display: block; /* Ensure button is displayed as block element */
+  margin-top: 1rem; /* Adjust margin according to your design */
+}
+
+/* Stats section styles */
+.stats {
+  background-color: #edf2f7; /* Adjust background color according to your design */
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+}
+
+.stats-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* Adjust number of columns according to your design */
+  gap: 1rem; /* Adjust gap according to your design */
+}
+
+.stats-card {
+  background-color: #fff; /* White background */
+  padding: 1rem;
+  text-align: center;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Add box shadow for elevation */
+  border-radius: 0.5rem; /* Adjust border radius according to your design */
+}
+
+/* Footer styles */
+.footer {
+  background-color: #2d3748; /* Adjust background color according to your design */
+  color: #fff; /* White text */
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.footer-inner {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: 100%; /* Adjust max-width according to your design */
+  text-align: center;
+}
+
+.footer a {
+  color: #6cb2eb; /* Adjust link color according to your design */
+  text-decoration: none; /* Remove underlines */
+  margin-right: 1rem; /* Adjust margin according to your design */
+}
