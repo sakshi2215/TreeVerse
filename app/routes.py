@@ -7,7 +7,7 @@ import cv2
 
 # Initialize the Blueprint
 main = Blueprint('main', __name__)
-UPLOAD_FOLDER = os.path.join(os.getcwd(), 'app','static', 'UPLOADS')
+UPLOAD_FOLDER = os.path.join(os.getcwd(), 'app','static', 'UPLOADS') ## Create uploads folder inside static directory
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
 
@@ -103,7 +103,7 @@ def get_weather():
     if not city:
         return jsonify({'error': 'City parameter is required'}), 400
 
-    api_url = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{city}?unitGroup=us&key=NBRQYJ66AF3C6NLHLBJZ3SDYT&contentType=json"
+    api_url = f"https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/{city}?unitGroup=us&key={}&contentType=json"
 
     try:
         response = requests.get(api_url)
