@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tree Counting</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+    <script src="https://cdn.jsdelivr.net/npm/onnxruntime-web/dist/ort.min.js"></script>
+    <link rel="stylesheet" href="{{url_for('static', filename= '/css/predict.css')}}">
+</head>
+<body>
+    <header>
+        <h1>Tree Enumeration</h1>
+    </header>
+    <main>
+        <input id="uploadInput" type="file"/>
+        <canvas id="canvas"></canvas>
+        <div id="objectCount"></div>
+    </main>
+    <script>
+        // Function to load an image file
+        function loadImage(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => {
+                    const img = new Image();
+                    img.onload = () => resolve(img);
+                    img.src = reader.result;
+                };
+                reader.onerror = reject;
+                reader.readAsDataURL(file);
+            });
+        }
+
+        // Function to preprocess the image to the required size
+        function preprocessImage(img, targetWidth, targetHeight) {
+            const canvas = document.createElement('canvas');
+            canvas.width = targetWidth;
+            canvas.height = targetHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+            const imageData = ctx.getImageData(0, 0, targetWidth, targetHeight);
+            const data = imageData.data;
+            const float32Data = new Float32Array(targetWidth * targetHeight * 3);
+            for (let i = 0; i < data.length; i += 4) {
+                const j = i / 4 * 3;
+                float32Data[j] = data[i] / 255;      // R
+                float32Data[j + 1] = data[i + 1] / 255;  // G
+                float32Data[j + 2] = data[i + 2] / 255;  // B
+            }
+            return float32Data;
+        }
+
+        // Function to draw the image and prediction on the canvas
+// Function to draw the image and prediction on the canvas
+function drawCanvas(img, densityMap, canvas, densityConstant) {
+    const ctx = canvas.getContext('2d');
+
+    const imageWidth = 256;
+    const imageHeight = 256;
+
+    const densityMapWidth = Math.sqrt(densityMap.length);
+    const densityMapHeight = densityMapWidth;
+
+    const totalWidth = imageWidth + densityMapWidth;
+    const totalHeight = Math.max(imageHeight, densityMapHeight) + 50; // Extra space for tree count
+
+    canvas.width = totalWidth;
+    canvas.height = totalHeight;
+
+    // Draw input image on the left side
+    ctx.drawImage(img, 0, 0, imageWidth, imageHeight);
+
+    // Create the density map visualization
+    const densityCanvas = document.createElement('canvas');
+    densityCanvas.width = densityMapWidth;
+    densityCanvas.height = densityMapHeight;
+    const densityCtx = densityCanvas.getContext('2d');
+
+    const densityImageData = densityCtx.createImageData(densityMapWidth, densityMapHeight);
+    for (let i = 0; i < densityMap.length; i++) {
+        const value = densityMap[i];
+        const color = getColorForDensity(value); // Get color based on density
+        densityImageData.data[i * 4] = color[0];        // R
+        densityImageData.data[i * 4 + 1] = color[1];    // G
+        densityImageData.data[i * 4 + 2] = color[2];    // B
+        densityImageData.data[i * 4 + 3] = 255;         // Alpha channel
+    }
+    densityCtx.putImageData(densityImageData, 0, 0);
+
+    // Draw the density map on the right side
+    ctx.drawImage(densityCanvas, imageWidth, 0, densityMapWidth, densityMapHeight);
+
+    // Calculate and display the tree count at the bottom
+    const treeCount = Math.round(densityMap.reduce((sum, value) => sum + value, 0) * densityConstant);
+    ctx.font = "20px Arial";
+    ctx.fillStyle = "black";
+    ctx.fillText(`Predicted tree count: ${treeCount}`, totalWidth / 2 - 100, totalHeight - 20); // Centered text
+
+    // Function to get color based on density value
+    function getColorForDensity(value) {
+        const minVal = 0;   // Minimum density value
+        const maxVal = 1;   // Maximum density value
+
+
+        // Normalize value between 0 and 1
+        const normalizedValue = (value - minVal) / (maxVal - minVal);
+        // Handle special case for zero density (show as white)
+    
+
+        // Interpolate red color based on normalized value
+        const r = Math.floor(normalizedValue * 255);
+        const g = 0; // No green component
+        const b = 0; // No blue component
+
+        return [r, g, b];
+    }
+}
+
+
+
+        document.getElementById('uploadInput').addEventListener('change', async (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const img = await loadImage(file);
+
+            const targetWidth = 256; // Adjust to your model's input size
+            const targetHeight = 256; // Adjust to your model's input size
+            const preprocessedImage = preprocessImage(img, targetWidth, targetHeight);
+
+            const tensor = new ort.Tensor('float32', preprocessedImage, [1, targetHeight, targetWidth, 3]);
+
+            const model = await ort.InferenceSession.create("{{url_for('static', filename= 'model/model.onnx')}}");
+
+            const feeds = { 'input': tensor };
+            const results = await model.run(feeds);
+            // Verify the structure of results or densityMap
+            
+            const densityMap = results[model.outputNames[0]].data;
+            console.log(densityMap) // Access the density map data
+
+            // Calculate total density
+            const totalDensity = densityMap.reduce((sum, value) => sum + value, 0);
+            const densityConstant = 0.01; // Replace with your actual density constant from linear regression
+
+            drawCanvas(img, densityMap, document.getElementById('canvas'), densityConstant);
+        });
+    </script>
+</body>
+</html>

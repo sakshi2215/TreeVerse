@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <title>Analysis</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+
+        .toggle-buttons {
+            margin-top: 10px;
+        }
+
+        .toggle-buttons a {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Analysis</h1>
+        <div class="toggle-buttons">
+            <a href="{{url_for('main.object_detection')}}" target="_blank" >Tree Count</a>
+            <a href="{{url_for('main.object_segmentation')}}" target="_blank">Green Cover</a>
+            <a href="{{url_for('main.tree_species')}}" target="_blank" >Map Boundary</a>
+            <a href="{{url_for('main.optimal_path')}}" target="_blank">Optimal Pathing</a>
+            <a href="{{url_for('main.historical_data')}}" target="_blank">Historical Data</a>
+        </div>
+    </header>
+</body>
+</html>

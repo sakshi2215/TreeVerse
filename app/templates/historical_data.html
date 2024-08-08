@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Javascript weather app with graph</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/weather.css') }}">
+</head>
+<body>
+    <div id="weatherApp">
+        <div id="weatherinfo">
+            <div id="temp">
+                <p id="currentTemp">The current temperature is: </p>
+            </div>
+            <div id="weather">
+                <p id="currentWeather">The current weather is: </p>
+            </div>
+            <div id="icon">
+                <img id="weatherIcon">
+            </div>
+        </div>
+        <div id="weatherGraphContainer">
+            <canvas id="weatherGraph"></canvas>
+        </div>
+    </div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.plot.ly/plotly-2.16.1.min.js"></script>
+<script src="{{ url_for('static', filename='js/weather.js') }}"></script>
+</body>
+</html>

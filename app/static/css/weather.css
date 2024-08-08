@@ -1,0 +1,52 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300&display=swap');
+
+#weatherApp {
+    margin-top: 40px;
+    width: 80vw;
+    margin-inline: auto;
+    display: grid;
+    grid-template-columns: 40% 60%;
+}
+
+#weatherinfo div {
+    font-family: 'Open Sans', sans-serif;
+    font-size: 30px;
+}
+
+#temp {
+    margin-bottom: 10px;
+}
+
+#weatherGraphContainer {
+    position: relative; 
+    height: 50vh; 
+    width: 50vw;
+}
+
+#temp, #weather, #icon {
+    display: flex !important;
+    justify-content: center !important;
+}
+
+#weather {
+    margin-bottom: 50px;
+}
+
+span:first-child {
+    margin-right: 0.65rem;
+}
+
+#weatherIcon {
+    display: none;
+}
+
+#weatherIcon[src] {
+    display: block;
+    height: 200px;
+    width: 200px;
+}
+
+
+/* * {
+    border: 1px solid red;
+} */
